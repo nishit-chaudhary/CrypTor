@@ -1,30 +1,25 @@
-from curses import COLOR_BLUE
 from tkinter import *
 from Crypto.Util.number import bytes_to_long, long_to_bytes
-from tkinter.ttk import *
-from tkinter.filedialog import askopenfile,asksaveasfile
-from turtle import bgcolor
+from tkinter.filedialog import askopenfile
 from PIL import ImageTk,Image
 from cryptography.fernet import Fernet
 from PyPDF2 import PdfFileWriter, PdfFileReader
 import time
 import random
-import email
 from base64 import b64encode
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
-from os import name
 import smtplib
 from twilio.rest import Client
 from Crypto.PublicKey import RSA
 
-fromaddr = "abc123cse1011@gmail.com"
-password = "crypto_project"
+fromaddr = "bci3001websec@gmail.com"
+password = "bcpnkflgzuievfyw"
 
-account_sid = "AC6a27af0eca5e5ffd12ce0d6c05393ddb"
-auth_token = "a3c5fd76763ba6daa008040c9eaa4768"
+account_sid = "ACfcac5c7fcb1f9e57dfba749b84cd7f8f"
+auth_token = "c3241590abd2918917b0eaf4bf14330d"
 
 f = open("public.pem", "r")
 pub_key = RSA.import_key(f.read())
@@ -34,7 +29,7 @@ f.close()
 
 def send_sms(phone_no,key):
     client = Client(account_sid, auth_token)
-    message = client.messages.create(body="Key : "+key, from_=+18288188490, to=int (phone_no))
+    message = client.messages.create(body="Key : "+key, from_=+15626207380, to=int (phone_no))
     
 #--------------------------------------------------------------------Send Msg-------------------------------------------------------------------------------------------#
 
@@ -86,7 +81,7 @@ def file_encryption_csv(filename):
     with open(p, 'wb') as encrypted_file:
         encrypted_file.write(encrypted)
     key = key.decode('utf-8')
-    Label(root, text='Key : '+str(key), foreground='blue').pack(side = TOP, pady=10)
+    Label(root, text='Key : '+str(key), background='#282828', foreground='#87ceeb').pack(side = TOP, pady=10)
     return key,p
 
 def file_decryption_csv(key,p):
@@ -120,7 +115,7 @@ def file_encryption_doc(filename):
     with open(p, 'wb') as encrypted_file:
         encrypted_file.write(encrypted)
     key = key.decode('utf-8')
-    Label(root, text='Key : '+str(key), foreground='blue').pack(side = TOP, pady=10)
+    Label(root, text='Key : '+str(key), foreground='white').pack(side = TOP, pady=10)
     return key,p
 
 def file_decryption_doc(key,p):
@@ -293,15 +288,19 @@ def file_decryption_pdf(key,p):
 # ----------------------------------------------------------------------pdf-------------------------------------------------------------------------------------------- #
 
 
+
 root = Tk()
 root.geometry("400x600")
+root.title("CrypTor: Encrypt and Decrypt Files")
+root.configure(background='#28282B')
 
-canvas = Canvas(root, width = 300, height = 150)
-canvas.config(bg='grey')
+canvas = Canvas(root, width = 140, height = 150, bd=0, highlightthickness=0, relief='ridge')
+canvas.config(bg='#28282B')
 canvas.pack()
 
 img1 = Image.open("logo1.png")
-image1 = img1.resize((300,150), Image.ANTIALIAS)
+image1 = img1.resize((140,150), Image.ANTIALIAS)
+# set image border to 0
 img = ImageTk.PhotoImage(image1)
 canvas.create_image(0,0, anchor=NW, image=img)
 
@@ -314,7 +313,7 @@ def open_file():
 
 def Encrypt():
     if f is None:
-        Label(root, text='Not uploaded a file yet!!', foreground='red').pack(side = TOP, pady=10)
+        Label(root, text='Not uploaded a file yet!!',background='#282828', foreground='red').pack(side = TOP, pady=10)
     else:
         if(f[-3:]=="csv"):
             t,q = file_encryption_csv(f)
@@ -350,20 +349,14 @@ def Encrypt():
             t,q = file_encryption_doc(f)      
         else:
             print(f[-3:])
-    bar = Progressbar(root,orient=HORIZONTAL,length=200,mode='determinate')
-    bar.pack(side = TOP, pady=20)
-    for i in range(5):
-        root.update_idletasks()
-        bar['value'] += 20
-        time.sleep(1)
-    bar.destroy()
-    Label(root, text='File Encrypted Successfully!', foreground='green').pack(side = TOP, pady=10)
+    
+    Label(root, text='File Encrypted Successfully!', foreground='green' ,background='#28282B').pack(side = TOP, pady=10)
 
-    Label(root, text='Enter the Email Address you want to send the file',foreground='red').pack(side = TOP)
+    Label(root, text='Enter the Email Address you want to send the file',background='#282828', foreground='white').pack(side = TOP)
     emaddr = Entry(root)
     emaddr.pack(side=TOP,pady=5)
 
-    Label(root, text='Enter the Phone Number you want to send the key',foreground='red').pack(side = TOP)
+    Label(root, text='Enter the Phone Number you want to send the key',background='#282828', foreground='white').pack(side = TOP)
     phnno = Entry(root)
     phnno.pack(side=TOP,pady=5)
 
@@ -374,13 +367,13 @@ def Encrypt():
 
         # Encrypt t with RSA pubic key
         t = bytes_to_long(t.encode())
-        print(t)
+        # print(t)
         enc = pow(t, pub_key.e, pub_key.n)
         enc = b64encode(long_to_bytes(enc)).decode()
-
+        print(enc)
         send_sms("+91"+str(phnno.get()),enc)
         
-    btn = Button(root, text ='Send Info', command = lambda:send_info(t))
+    btn = Button(root, bg='#282828', fg='white', text ='Send Info', command = lambda:send_info(t))
     btn.pack(side = TOP, pady = 5)
     print(t)
     print(q)
@@ -390,119 +383,17 @@ def Decrypt(key):
     if(f[-3:]=='csv'):
         try:
             file_decryption_csv(key,f)
-            bar = Progressbar(root,orient=HORIZONTAL,length=200,mode='determinate')
-            bar.pack(side = TOP, pady=20)
-            for i in range(5):
-                root.update_idletasks()
-                bar['value'] += 20
-                time.sleep(1)
-            bar.destroy()
-            Label(root, text='File Decrypted Successfully!', foreground='green').pack( side = TOP, pady=10)
+            
+            Label(root, text='File Decrypted Successfully!', foreground='green' ,background='#28282B').pack( side = TOP, pady=10)
 
         except:
             Label(root, text='Error', foreground='blue').pack(side = TOP,pady=10)
 
-    elif(f[-3:]=='png'):
+    elif(f[-3:]=='png' or f[-4:]=='jpeg' or f[-3:]=='jpg' or f[-3:]=='gif' or f[-4:]=='tiff' or f[-3:]=='tif' or f[-3:]=='bmp'):
         try:
             file_decryption_image(key,f)
-            bar = Progressbar(root,orient=HORIZONTAL,length=200,mode='determinate')
-            bar.pack(side = TOP, pady=20)
-            for i in range(5):
-                root.update_idletasks()
-                bar['value'] += 20
-                time.sleep(1)
-            bar.destroy()
-            Label(root, text='File Decrypted Successfully!', foreground='green').pack( side = TOP, pady=10)
-
-        except:
-            Label(root, text='Error', foreground='blue').pack(side = TOP,pady=10)
-
-    elif(f[-4:]=='jpeg'):
-        try:
-            file_decryption_image(key,f)
-            bar = Progressbar(root,orient=HORIZONTAL,length=200,mode='determinate')
-            bar.pack(side = TOP, pady=20)
-            for i in range(5):
-                root.update_idletasks()
-                bar['value'] += 20
-                time.sleep(1)
-            bar.destroy()
-            Label(root, text='File Decrypted Successfully!', foreground='green').pack( side = TOP, pady=10)
-
-        except:
-            Label(root, text='Error', foreground='blue').pack(side = TOP,pady=10)
-    
-    elif(f[-3:]=='jpg'):
-        try:
-            file_decryption_image(key,f)
-            bar = Progressbar(root,orient=HORIZONTAL,length=200,mode='determinate')
-            bar.pack(side = TOP, pady=20)
-            for i in range(5):
-                root.update_idletasks()
-                bar['value'] += 20
-                time.sleep(1)
-            bar.destroy()
-            Label(root, text='File Decrypted Successfully!', foreground='green').pack( side = TOP, pady=10)
-
-        except:
-            Label(root, text='Error', foreground='blue').pack(side = TOP,pady=10)
-
-    elif(f[-3:]=='gif'):
-        try:
-            file_decryption_image(key,f)
-            bar = Progressbar(root,orient=HORIZONTAL,length=200,mode='determinate')
-            bar.pack(side = TOP, pady=20)
-            for i in range(5):
-                root.update_idletasks()
-                bar['value'] += 20
-                time.sleep(1)
-            bar.destroy()
-            Label(root, text='File Decrypted Successfully!', foreground='green').pack( side = TOP, pady=10)
-
-        except:
-            Label(root, text='Error', foreground='blue').pack(side = TOP,pady=10)
-
-    elif(f[-4:]=='tiff'):
-        try:
-            file_decryption_image(key,f)
-            bar = Progressbar(root,orient=HORIZONTAL,length=200,mode='determinate')
-            bar.pack(side = TOP, pady=20)
-            for i in range(5):
-                root.update_idletasks()
-                bar['value'] += 20
-                time.sleep(1)
-            bar.destroy()
-            Label(root, text='File Decrypted Successfully!', foreground='green').pack( side = TOP, pady=10)
-
-        except:
-            Label(root, text='Error', foreground='blue').pack(side = TOP,pady=10)
-
-    elif(f[-3:]=='tif'):
-        try:
-            file_decryption_image(key,f)
-            bar = Progressbar(root,orient=HORIZONTAL,length=200,mode='determinate')
-            bar.pack(side = TOP, pady=20)
-            for i in range(5):
-                root.update_idletasks()
-                bar['value'] += 20
-                time.sleep(1)
-            bar.destroy()
-            Label(root, text='File Decrypted Successfully!', foreground='green').pack( side = TOP, pady=10)
-
-        except:
-            Label(root, text='Error', foreground='blue').pack(side = TOP,pady=10)
-
-    elif(f[-3:]=='bmp'):
-        try:
-            file_decryption_image(key,f)
-            bar = Progressbar(root,orient=HORIZONTAL,length=200,mode='determinate')
-            bar.pack(side = TOP, pady=20)
-            for i in range(5):
-                root.update_idletasks()
-                bar['value'] += 20
-                time.sleep(1)
-            bar.destroy()
-            Label(root, text='File Decrypted Successfully!', foreground='green').pack( side = TOP, pady=10)
+            
+            Label(root, text='File Decrypted Successfully!', foreground='green' ,background='#28282B').pack( side = TOP, pady=10)
 
         except:
             Label(root, text='Error', foreground='blue').pack(side = TOP,pady=10)
@@ -510,89 +401,17 @@ def Decrypt(key):
     elif(f[-3:]=='pdf'):
         try:
             file_decryption_pdf(key,f)
-            bar = Progressbar(root,orient=HORIZONTAL,length=200,mode='determinate')
-            bar.pack(side = TOP, pady=20)
-            for i in range(5):
-                root.update_idletasks()
-                bar['value'] += 20
-                time.sleep(1)
-            bar.destroy()
-            Label(root, text='File Decrypted Successfully!', foreground='green').pack( side = TOP, pady=10)
+            
+            Label(root, text='File Decrypted Successfully!', foreground='green' ,background='#28282B').pack( side = TOP, pady=10)
 
         except:
             Label(root, text='Error', foreground='blue').pack(side = TOP, pady=10)
     
-    elif(f[-3:]=='mkv'):
+    elif(f[-3:]=='mkv' or f[-3:]=='mp4' or f[-3:]=='avi' or f[-3:]=='wmv' or f[-3:]=='mov'):
         try:
             file_decryption_movie(key,f)
-            bar = Progressbar(root,orient=HORIZONTAL,length=200,mode='determinate')
-            bar.pack(side = TOP, pady=20)
-            for i in range(5):
-                root.update_idletasks()
-                bar['value'] += 20
-                time.sleep(1)
-            bar.destroy()
-            Label(root, text='File Decrypted Successfully!', foreground='green').pack( side = TOP, pady=10)
-
-        except:
-            Label(root, text='Error', foreground='blue').pack(side = TOP, pady=10)
-
-    elif(f[-3:]=='mp4'):
-        try:
-            file_decryption_movie(key,f)
-            bar = Progressbar(root,orient=HORIZONTAL,length=200,mode='determinate')
-            bar.pack(side = TOP, pady=20)
-            for i in range(5):
-                root.update_idletasks()
-                bar['value'] += 20
-                time.sleep(1)
-            bar.destroy()
-            Label(root, text='File Decrypted Successfully!', foreground='green').pack( side = TOP, pady=10)
-
-        except:
-            Label(root, text='Error', foreground='blue').pack(side = TOP, pady=10)
-    
-    elif(f[-3:]=='mov'):
-        try:
-            file_decryption_movie(key,f)
-            bar = Progressbar(root,orient=HORIZONTAL,length=200,mode='determinate')
-            bar.pack(side = TOP, pady=20)
-            for i in range(5):
-                root.update_idletasks()
-                bar['value'] += 20
-                time.sleep(1)
-            bar.destroy()
-            Label(root, text='File Decrypted Successfully!', foreground='green').pack( side = TOP, pady=10)
-
-        except:
-            Label(root, text='Error', foreground='blue').pack(side = TOP, pady=10)
-
-    elif(f[-3:]=='wmv'):
-        try:
-            file_decryption_movie(key,f)
-            bar = Progressbar(root,orient=HORIZONTAL,length=200,mode='determinate')
-            bar.pack(side = TOP, pady=20)
-            for i in range(5):
-                root.update_idletasks()
-                bar['value'] += 20
-                time.sleep(1)
-            bar.destroy()
-            Label(root, text='File Decrypted Successfully!', foreground='green').pack( side = TOP, pady=10)
-
-        except:
-            Label(root, text='Error', foreground='blue').pack(side = TOP, pady=10)
-
-    elif(f[-3:]=='avi'):
-        try:
-            file_decryption_movie(key,f)
-            bar = Progressbar(root,orient=HORIZONTAL,length=200,mode='determinate')
-            bar.pack(side = TOP, pady=20)
-            for i in range(5):
-                root.update_idletasks()
-                bar['value'] += 20
-                time.sleep(1)
-            bar.destroy()
-            Label(root, text='File Decrypted Successfully!', foreground='green').pack( side = TOP, pady=10)
+           
+            Label(root, text='File Decrypted Successfully!', foreground='green' ,background='#28282B').pack( side = TOP, pady=10)
 
         except:
             Label(root, text='Error', foreground='blue').pack(side = TOP, pady=10)
@@ -600,14 +419,8 @@ def Decrypt(key):
     elif(f[-3:]=='mp3'):
         try:
             file_decryption_mp3(key,f)
-            bar = Progressbar(root,orient=HORIZONTAL,length=200,mode='determinate')
-            bar.pack(side = TOP, pady=20)
-            for i in range(5):
-                root.update_idletasks()
-                bar['value'] += 20
-                time.sleep(1)
-            bar.destroy()
-            Label(root, text='File Decrypted Successfully!', foreground='green').pack( side = TOP, pady=10)
+            
+            Label(root, text='File Decrypted Successfully!', foreground='green' ,background='#28282B').pack( side = TOP, pady=10)
 
         except:
             Label(root, text='Error', foreground='blue').pack(side = TOP, pady=10)
@@ -615,14 +428,8 @@ def Decrypt(key):
     elif(f[-3:]=='doc'):
         try:
             file_decryption_doc(key,f)
-            bar = Progressbar(root,orient=HORIZONTAL,length=200,mode='determinate')
-            bar.pack(side = TOP, pady=20)
-            for i in range(5):
-                root.update_idletasks()
-                bar['value'] += 20
-                time.sleep(1)
-            bar.destroy()
-            Label(root, text='File Decrypted Successfully!', foreground='green').pack( side = TOP, pady=10)
+            
+            Label(root, text='File Decrypted Successfully!', foreground='green' ,background='#28282B').pack( side = TOP, pady=10)
 
         except:
             Label(root, text='Error', foreground='blue').pack(side = TOP, pady=10)
@@ -630,17 +437,21 @@ def Decrypt(key):
     else:
         print(f[-3:])
 
-btn = Button(root, text ='Browse Files', command = lambda:open_file())
+# add space between logo1 and browse files btn
+Label(root, text='', background='#28282B').pack()
+
+btn = Button(root, bg='#282828', fg='white', text ='Browse Files',command = lambda:open_file())
 btn.pack(side = TOP, pady = 5)
 
-upld = Button(root, text='Encrypt', command=Encrypt)
+upld = Button(root, bg='#282828', fg='white', text='Encrypt', command=Encrypt)
 upld.pack(side = TOP, pady=5)
 
-Label(root, text='Enter the Decryption Key', foreground='crimson').pack(side =TOP, pady=10)
+Label(root, text='Enter the Decryption Key',background='#28282B', foreground='white').pack(side =TOP, pady=10)
+
 inputtxt = Entry(root)
 inputtxt.pack(side=TOP,pady=5)
 
-dec = Button(root,text='Decrypt',command = lambda:Decrypt(inputtxt))
+dec = Button(root, bg='#282828', fg='white', text='Decrypt',command = lambda:Decrypt(inputtxt))
 dec.pack(side = TOP,pady = 5)
 
 root.mainloop()
