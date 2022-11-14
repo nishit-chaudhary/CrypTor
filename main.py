@@ -18,8 +18,8 @@ from Crypto.PublicKey import RSA
 fromaddr = "bci3001websec@gmail.com"
 password = "bcpnkflgzuievfyw"
 
-account_sid = "ACfcac5c7fcb1f9e57dfba749b84cd7f8f"
-auth_token = "c3241590abd2918917b0eaf4bf14330d"
+account_sid = "Your sid"
+auth_token = "Your auth token"
 
 f = open("public.pem", "r")
 pub_key = RSA.import_key(f.read())
