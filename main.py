@@ -18,8 +18,8 @@ from Crypto.PublicKey import RSA
 fromaddr = "bci3001websec@gmail.com"
 password = "bcpnkflgzuievfyw"
 
-account_sid = "ACfcac5c7fcb1f9e57dfba749b84cd7f8f"
-auth_token = "c3241590abd2918917b0eaf4bf14330d"
+account_sid = "Your account sid"
+auth_token = "Your authentication token"
 
 f = open("public.pem", "r")
 pub_key = RSA.import_key(f.read())
@@ -290,16 +290,16 @@ def file_decryption_pdf(key,p):
 
 
 root = Tk()
-root.geometry("400x600")
+root.geometry("400x700")
 root.title("CrypTor: Encrypt and Decrypt Files")
 root.configure(background='#28282B')
 
-canvas = Canvas(root, width = 140, height = 150, bd=0, highlightthickness=0, relief='ridge')
+canvas = Canvas(root, width = 233, height = 250, bd=0, highlightthickness=0, relief='ridge')
 canvas.config(bg='#28282B')
 canvas.pack()
 
 img1 = Image.open("logo1.png")
-image1 = img1.resize((140,150), Image.ANTIALIAS)
+image1 = img1.resize((233,250), Image.ANTIALIAS)
 # set image border to 0
 img = ImageTk.PhotoImage(image1)
 canvas.create_image(0,0, anchor=NW, image=img)
@@ -373,7 +373,7 @@ def Encrypt():
         print(enc)
         send_sms("+91"+str(phnno.get()),enc)
         
-    btn = Button(root, bg='#282828', fg='white', text ='Send Info', command = lambda:send_info(t))
+    btn = Button(root, bg='#FAFA33', fg='#010101', text ='Send Info', command = lambda:send_info(t))
     btn.pack(side = TOP, pady = 5)
     print(t)
     print(q)
@@ -440,10 +440,10 @@ def Decrypt(key):
 # add space between logo1 and browse files btn
 Label(root, text='', background='#28282B').pack()
 
-btn = Button(root, bg='#282828', fg='white', text ='Browse Files',command = lambda:open_file())
+btn = Button(root, bg='#FAFA33', fg='#010101', text ='Browse Files',command = lambda:open_file())
 btn.pack(side = TOP, pady = 5)
 
-upld = Button(root, bg='#282828', fg='white', text='Encrypt', command=Encrypt)
+upld = Button(root, bg='#FAFA33', fg='#010101', text='Encrypt', command=Encrypt)
 upld.pack(side = TOP, pady=5)
 
 Label(root, text='Enter the Decryption Key',background='#28282B', foreground='white').pack(side =TOP, pady=10)
@@ -451,7 +451,7 @@ Label(root, text='Enter the Decryption Key',background='#28282B', foreground='wh
 inputtxt = Entry(root)
 inputtxt.pack(side=TOP,pady=5)
 
-dec = Button(root, bg='#282828', fg='white', text='Decrypt',command = lambda:Decrypt(inputtxt))
+dec = Button(root, bg='#FAFA33', fg='#010101', text='Decrypt',command = lambda:Decrypt(inputtxt))
 dec.pack(side = TOP,pady = 5)
 
 root.mainloop()
