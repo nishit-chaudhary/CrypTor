@@ -15,8 +15,8 @@ import smtplib
 from twilio.rest import Client
 from Crypto.PublicKey import RSA
 
-fromaddr = "bci3001websec@gmail.com"
-password = "bcpnkflgzuievfyw"
+fromaddr = "example@mail.com"
+password = "password"
 
 account_sid = "Your account sid"
 auth_token = "Your authentication token"
@@ -298,7 +298,7 @@ canvas = Canvas(root, width = 233, height = 250, bd=0, highlightthickness=0, rel
 canvas.config(bg='#28282B')
 canvas.pack()
 
-img1 = Image.open("logo1.png")
+img1 = Image.open("./Assets/logo1.png")
 image1 = img1.resize((233,250), Image.ANTIALIAS)
 # set image border to 0
 img = ImageTk.PhotoImage(image1)
